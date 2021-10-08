@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text, Button } from 'react-native';
 import { useCallback, useEffect } from 'react';
-import { store } from '../store';
+import STORE from '../store';
 import { useFocusEffect } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Role from './Role';
@@ -34,11 +34,20 @@ export default function HomeScreen({ route, navigation }) {
         name: 'player2',
         status: 0
     }])
+    const _setPlayers = () => {
+        let players = STORE.PLAYER.getState()
+        setPlayers([...players])//初始化当前组件的players
+    }
     useFocusEffect(
         useCallback(() => {
-            let players = store.getState()
-            setPlayers([...players])//初始化当前组件的players
-            console.log(players, '屏幕聚焦时')
+            // console.log(PLAYER,'hm')
+            _setPlayers()
+            STORE.PLAYER.subscribe(() => {
+                _setPlayers()
+            })
+            return () => {
+                STORE.PLAYER.subscribe(() => { })
+            }
         }, [])
     )
 
@@ -57,7 +66,11 @@ export default function HomeScreen({ route, navigation }) {
         <TopTab.Navigator screenOptions={{ tabBarScrollEnabled: true }}>
             {
                 players.map((e, index) => {
-                    return <TopTab.Screen key={index} name={e.name} component={() => <Role name={e.name} />} />
+                    return <TopTab.Screen
+                        key={index}
+                        name={e.name}
+                        component={() => <Role index={index} data={e} />}
+                    />
                 })
             }
         </TopTab.Navigator >

@@ -7,7 +7,7 @@ import styles from './style'
 import getRandomPic from '../../api'
 import Loading from '../../components/Loading';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { store, NEW_PLAYER_ACTION, SET_PLAYERS_ACTION } from '../../store';
+import STORE from "../../store"
 export default function Setting({ navigation }) {
     const [loading, setLoading] = useState(false)
     const [number, setNumber] = useState(0)
@@ -16,13 +16,11 @@ export default function Setting({ navigation }) {
     const [request_status, set_request_status] = useState('')
     const [bannerImg, setBannerImg] = useState('https://img0.baidu.com/it/u=3675914383,561856736&fm=26&fmt=auto')
     const [players, setPlayers] = useState([])
-    // const [mainHeight,setMainHeight]=useState()
     useFocusEffect(
         useCallback(() => {
             request_image()
-            console.log(Dimensions.get('window').height, Dimensions.get('screen').height)
-            let storePlayers = store.getState()
-            setPlayers([...storePlayers])
+            let storePlayers = STORE.PLAYER.getState()
+            setPlayers(storePlayers)
             //首次加载时从redux获取,在点击保存/离开屏幕时 再执行一次reducer
         }, [])
     )
@@ -41,7 +39,7 @@ export default function Setting({ navigation }) {
         let curPlayers = players
         curPlayers.push({
             name: 'player' + (curPlayers.length + 1),
-            status: 0
+            ...STORE.defaultPlayer
         })
         setPlayers([...curPlayers])
     }
@@ -52,8 +50,7 @@ export default function Setting({ navigation }) {
     }
     const savePlayers = () => {
         console.log(players)
-        store.dispatch(SET_PLAYERS_ACTION(players))
-        console.log(store.getState(), '保存')
+        STORE.PLAYER.dispatch(STORE.SET_PLAYERS([...players]))
     }
     useEffect(() => {
         loadingRef.current = loading

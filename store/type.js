@@ -1,0 +1,7 @@
+export default {
+    NEW_PLAYER: 'NEW_PLAYER',
+    SET_PLAYERS: 'SET_PLAYERS',//更新当前所有的player数组信息
+    SET_INDEX_PLAYER: 'SET_INDEX_PLAYER',//设置指定索引player的数据
+    BUY_ENTOURAGE: 'BUY_ENTOURAGE',
+    SELL_ENTOURAGE: 'SELL_ENTOURAGE'
+}
